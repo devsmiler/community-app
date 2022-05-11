@@ -1,42 +1,55 @@
 import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
+  Delete,
   Param,
   ParseIntPipe,
   Patch,
-  Post,
-  Put,
   UseFilters,
+  UseInterceptors,
 } from '@nestjs/common';
-import { HttpExceptionFilter } from 'src/http-exception.filter';
+import { Controller, Get, Post, Put } from '@nestjs/common';
+import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
+import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
+import { PositiveIntPipe } from 'src/common/pipes/positiveInt.pipe';
 import { CatsService } from './cats.service';
 
 @Controller('cats')
-// @UseFilters(HttpExceptionFilter)
+@UseInterceptors(SuccessInterceptor)
+@UseFilters(HttpExceptionFilter)
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
+  // cats/
   @Get()
   getAllCat() {
-    throw new HttpException('api broken', 400);
-    return 'all cat';
+    console.log('hello controller');
+    return { cats: 'get all cat api' };
   }
+
+  // cats/:id
   @Get(':id')
-  getCat(@Param('id', ParseIntPipe) id: number) {
-    return `#${id} cat`;
+  getOneCat(@Param('id', ParseIntPipe, PositiveIntPipe) param: number) {
+    console.log(param);
+    // console.log(typeof param);
+    return 'get one cat api';
   }
+
   @Post()
-  createCat(@Body('id') id: number) {
-    return `#${id} cat`;
+  createCat() {
+    return 'create cat api';
   }
+
   @Put(':id')
-  updateCat(@Param('id') id: number) {
-    return `#${id} cat`;
+  updateCat() {
+    return 'update cat api';
   }
+
   @Patch(':id')
   updatePartialCat() {
-    return;
+    return 'update partial cat api';
+  }
+
+  @Delete(':id')
+  deleteCat() {
+    return 'delete service';
   }
 }
