@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpException,
@@ -27,7 +28,7 @@ export class CatsController {
     return `#${id} cat`;
   }
   @Post()
-  createCat(@Param('id') id: number) {
+  createCat(@Body('id') id: number) {
     return `#${id} cat`;
   }
   @Put(':id')
